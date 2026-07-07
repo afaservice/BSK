@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BSK Wartung">
+<meta name="theme-color" content="#002060">
+<title>Brandschutzklappenprotokoll – BSK Wartung 2026</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{--brand:#002060;--bl:#E6EAF3;--blue:#185FA5;--or:#EF9F27;--orl:#FAEEDA;--red:#E24B4A;--rdl:#FCEBEB;--bdr:#E2E0D8;--bg:#F5F4EF;--bg2:#ECEAE3;--card:#fff;--tx:#1A1916;--tx2:#6B6860;--tx3:#9B9A96;--r:12px;--rs:8px;--f:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#1C1C1E;--bg2:#2C2C2E;--card:#3A3A3C;--bdr:#48484A;--tx:#F2F2F7;--tx2:#AEAEB2;--tx3:#636366;--bl:#0A1A3D;--orl:#3D2A0D;--rdl:#3D0D0D}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;height:100dvh;overflow:hidden}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;position:fixed;width:100%;top:0;left:0}
+#app{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+.topbar{background:var(--card);border-bottom:.5px solid var(--bdr);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:600;color:var(--tx)}.topbar-sub{font-size:11px;color:var(--tx2);margin-top:1px}
+.btn-pdf{padding:7px 13px;background:var(--brand);color:#fff;border:none;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--f)}
+.pbar{height:3px;background:var(--bdr);flex-shrink:0}
+.pfill{height:100%;background:var(--brand);transition:width .4s;width:25%}
+.tabs{display:flex;border-bottom:.5px solid var(--bdr);background:var(--card);padding:0 6px;overflow-x:auto;flex-shrink:0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 11px;font-size:12px;color:var(--tx2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;user-select:none}
+.tab.active{color:var(--brand);border-bottom-color:var(--brand);font-weight:600}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.content{padding:10px 14px;display:flex;flex-direction:column;gap:10px}
+.hidden{display:none!important}
+.card{background:var(--card);border:.5px solid var(--bdr);border-radius:var(--r);overflow:hidden}
+.sec-hdr{padding:9px 14px;display:flex;align-items:center;gap:8px;border-bottom:.5px solid var(--bdr);background:var(--bg2)}
+.sec-hdr i{font-size:15px;color:var(--brand)}.sec-title{font-size:13px;font-weight:500;color:var(--tx)}
+.hmeta{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px}
+.mf{display:flex;flex-direction:column;gap:4px}.ml{font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em}
+.mi{padding:7px 10px;font-size:13px;border:.5px solid var(--bdr);border-radius:var(--rs);background:var(--card);color:var(--tx);font-family:var(--f)}
+.sum-grid{padding:12px 14px;display:flex;gap:10px}
+.sum-box{flex:1;background:var(--bg2);border-radius:var(--rs);padding:12px 8px;text-align:center}
+.sum-num{font-size:24px;font-weight:600}.sum-lbl{font-size:11px;color:var(--tx2);margin-top:2px}
+textarea{width:100%;padding:10px;font-size:14px;border:.5px solid var(--bdr);border-radius:var(--rs);font-family:var(--f);background:var(--card);color:var(--tx);resize:vertical;min-height:75px}
+.sig-wrap{padding:11px 14px}
+.sig-lrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.sig-name{font-size:13px;font-weight:500;color:var(--tx)}
+.sig-btn{padding:5px 11px;font-size:12px;border:.5px solid var(--bdr);border-radius:var(--rs);background:var(--bg2);color:var(--tx2);cursor:pointer;font-family:var(--f)}
+.sig-btn.done{background:var(--bl);border-color:#3366AA;color:var(--brand);font-weight:500}
+.sig-canvas{width:100%;height:110px;border:1px dashed var(--bdr);border-radius:var(--rs);cursor:crosshair;touch-action:none;display:block;background:var(--bg)}
+.sig-canvas.signed{border-style:solid;border-color:#3366AA;background:var(--card)}
+.sig-hint{font-size:11px;color:var(--tx3);margin-top:4px;text-align:center}
+.fbar{background:var(--card);border-top:.5px solid var(--bdr);padding:11px 14px;display:flex;gap:8px;align-items:center;flex-shrink:0}
+.btn-back{padding:11px 14px;background:var(--bg2);color:var(--tx);border:.5px solid var(--bdr);border-radius:var(--rs);font-size:15px;cursor:pointer;font-family:var(--f);min-height:44px}
+.btn-next{flex:1;padding:11px;background:var(--brand);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:500;cursor:pointer;font-family:var(--f);min-height:44px}
+.btn-pfoo{padding:11px 14px;background:var(--blue);color:#fff;border:none;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--f);min-height:44px}
+.toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:7px 16px;border-radius:var(--rs);font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:100}
+.toast.show{opacity:1}
+.bsk-table{width:100%;border-collapse:collapse;font-size:12px}
+.bsk-table th,.bsk-table td{border-bottom:.5px solid var(--bdr);padding:6px 5px;vertical-align:top}
+.bsk-table th{font-size:10px;color:var(--tx2);text-transform:uppercase;letter-spacing:.05em;background:var(--bg2)}
+.bsk-input{width:100%;padding:5px 6px;font-size:12px;border:.5px solid var(--bdr);border-radius:var(--rs);background:var(--card);color:var(--tx);font-family:var(--f)}
+.bsk-row-idx{font-size:11px;color:var(--tx2);text-align:center}
+.bsk-select{width:100%;padding:5px 6px;font-size:12px;border:.5px solid var(--bdr);border-radius:var(--rs);background:var(--card);color:var(--tx);font-family:var(--f)}
+.photo-btn-wrap{margin-top:4px;display:none}
+.photo-btn{width:100%;padding:4px 6px;font-size:11px;border-radius:var(--rs);border:.5px dashed var(--bdr);background:var(--bg2);color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}
+.photo-btn span.icon{font-size:13px;color:var(--brand)}
+.photo-btn input{display:none}
+.photo-btn.saved{border-style:solid;border-color:#3366AA;background:var(--bl);color:var(--brand);font-weight:500}
+.pov{position:fixed;inset:0;background:var(--bg);z-index:50;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ptopbar{background:var(--card);border-bottom:.5px solid var(--bdr);padding:11px 14px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.ptopbar-title{font-size:15px;font-weight:500;color:var(--tx)}.ptopbar-sub{font-size:12px;color:var(--tx2);margin-top:2px}
+.btn-print{padding:8px 15px;background:var(--brand);color:#fff;border:none;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--f)}
+.btn-cpdf{padding:8px 12px;background:var(--bg2);color:var(--tx);border:.5px solid var(--bdr);border-radius:var(--rs);font-size:14px;cursor:pointer;font-family:var(--f)}
+.pdoc{background:#fff;border:.5px solid #ddd;border-radius:var(--r);overflow:hidden;font-family:'Helvetica Neue',Arial,sans-serif;font-size:10pt;color:#222;line-height:1.4;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.pco-hdr{display:flex;justify-content:space-between;align-items:center;background:#002060;padding:14px 18px;gap:20px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pco-logo{height:60px;max-width:220px;object-fit:contain;flex-shrink:0}
+.pco-right{text-align:right;flex:1}
+.pdoc-title{font-size:13pt;font-weight:700;color:#fff;display:inline;line-height:1.3}
+.pnorm{font-size:8pt;color:rgba(255,255,255,.75);display:inline;margin-left:8px;line-height:1.3}
+.pco-info{font-size:8pt;color:rgba(255,255,255,.75);line-height:1.6;margin-top:4px}
+.pbody{padding:14px 18px}
+.pparties{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.pparty{background:#f5f5f5;border-radius:4px;padding:7px 9px}
+.pparty-title{font-size:7.5pt;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;line-height:1.3}
+.pparty-val{font-size:9pt;color:#333;line-height:1.5}
+.pmeta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.pbox{background:#f5f5f5;border-radius:4px;padding:6px 8px}
+.pbox-k{font-size:7.5pt;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;line-height:1.3}.pbox-v{font-size:9.5pt;font-weight:600;color:#222;line-height:1.3}
+.psec{font-size:8pt;font-weight:700;color:#002060;text-transform:uppercase;letter-spacing:.06em;margin:10px 0 4px;border-bottom:.5px solid #ccc;padding-bottom:3px;line-height:1.3}
+.ptbl{width:100%;border-collapse:collapse;font-size:8.5pt;line-height:1.35}
+.ptbl th{background:#EEF1F8;color:#002060;padding:4px 6px;text-align:left;font-size:7.5pt;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #ddd;-webkit-print-color-adjust:exact;print-color-adjust:exact;line-height:1.3;vertical-align:middle}
+.ptbl td{padding:4px 6px;border-bottom:.5px solid #eee;vertical-align:middle;line-height:1.35}
+.pfoot{margin-top:12px;border-top:.5px solid #eee;padding-top:6px;font-size:7.5pt;color:#bbb;display:flex;justify-content:space-between;line-height:1.3}
+@media print{
+  #app,#pov,#splash,.toast{display:none!important}
+  #printArea{display:block!important}
+  @page{margin:10mm;size:A4}
+}
+#printArea{display:none}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+<div id="splash" style="position:fixed;inset:0;background:#002060;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s">
+  <div style="font-family:-apple-system,sans-serif;font-size:18px;color:#fff;font-weight:600;letter-spacing:.04em">Brandschutzklappenprotokoll</div>
+  <div style="font-family:-apple-system,sans-serif;font-size:13px;color:rgba(255,255,255,.7);letter-spacing:.04em">BSK Wartung 2026</div>
+  <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);animation:pulse 1.2s ease-in-out infinite"></div>
+</div>
+<style>@keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}</style>
+
+<div id="app">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Brandschutzklappenprotokoll</div>
+      <div class="topbar-sub">gemäß Herstellerangaben / Prüfzeugnissen</div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="btn-pdf" onclick="saveJSON()" style="background:var(--bg2);color:var(--tx);border:.5px solid var(--bdr)">💾</button>
+      <button class="btn-pdf" onclick="document.getElementById('load-input').click()" style="background:var(--bg2);color:var(--tx);border:.5px solid var(--bdr)">📂</button>
+      <input id="load-input" type="file" accept=".json" style="display:none" onchange="loadJSON(this)">
+      <button class="btn-pdf" onclick="document.getElementById('xl-input').click()" style="background:var(--bg2);color:var(--tx);border:.5px solid var(--bdr)" title="Excel importieren">📊</button>
+      <input id="xl-input" type="file" accept=".xlsx,.xls" style="display:none" onchange="loadExcel(this)">
+      <button class="btn-pdf" onclick="showPdf()">PDF ↗</button>
+    </div>
+  </div>
+  <div class="pbar"><div class="pfill" id="pfill"></div></div>
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('kopf',this)">Stammdaten</div>
+    <div class="tab" onclick="showTab('bsk',this)">BSK-Liste</div>
+    <div class="tab" onclick="showTab('abschluss',this)">Abschluss</div>
+    <div class="tab" onclick="showTab('sig',this)">Unterschrift</div>
+  </div>
+
+  <div class="scroll">
+    <!-- Stammdaten -->
+    <div id="tab-kopf" class="content">
+      <div class="card">
+        <div class="sec-hdr">
+          <i class="ti ti-clipboard-list"></i>
+          <span class="sec-title">Auftrag &amp; Kunde</span>
+        </div>
+        <div class="hmeta">
+          <div class="mf">
+            <label class="ml">Auftragsnummer</label>
+            <input class="mi" id="f-auftragsnr" placeholder="z.B. A-2026-001" oninput="autosave()">
+          </div>
+          <div class="mf">
+            <label class="ml">Kunde</label>
+            <input class="mi" id="f-kunde" placeholder="Name / Firma" oninput="autosave()">
+          </div>
+          <div class="mf">
+            <label class="ml">Datum</label>
+            <input class="mi" id="f-datum" placeholder="TT.MM.JJJJ" oninput="autosave()">
+          </div>
+          <div class="mf">
+            <label class="ml">Nächste Wartung</label>
+            <input class="mi" id="f-naechste" placeholder="TT.MM.JJJJ" oninput="autosave()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-hdr">
+          <i class="ti ti-building"></i>
+          <span class="sec-title">Objekt / Anlage</span>
+        </div>
+        <div class="hmeta">
+          <div class="mf">
+            <label class="ml">Objekt</label>
+            <input class="mi" id="f-objekt" placeholder="z.B. Bürogebäude Haus A" oninput="autosave()">
+          </div>
+          <div class="mf">
+            <label class="ml">Adresse</label>
+            <input class="mi" id="f-adresse" placeholder="Straße, PLZ Ort" oninput="autosave()">
+          </div>
+          <div class="mf">
+            <label class="ml">Techniker</label>
+            <input class="mi" id="f-techniker" placeholder="Name/n" oninput="autosave()">
+          </div>
+          <div class="mf">
+            <label class="ml">Bemerkung</label>
+            <input class="mi" id="f-kopf-bem" placeholder="optional" oninput="autosave()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BSK-Liste wie in Excel -->
+    <div id="tab-bsk" class="content hidden">
+      <div class="card">
+        <div class="sec-hdr">
+          <i class="ti ti-shield-lock"></i>
+          <span class="sec-title">Brandschutzklappen – Übersicht</span>
+        </div>
+        <div style="padding:10px 14px;font-size:12px;color:var(--tx2);line-height:1.5">
+          BSK‑Nr., Einbauort, Abmessung B×H×L, Hersteller, Prüfzeichen, Einbau, Funktion, Art (W,D,B), Bemerkung.<br>
+          Für <strong>Einbau</strong> und <strong>Funktion</strong> bitte Status wählen (i.O. / n.i.O.); bei n.i.O. kann ein Foto hinterlegt werden.
+        </div>
+        <div style="padding:10px 10px 12px;overflow-x:auto">
+          <table class="bsk-table">
+            <thead>
+              <tr>
+                <th style="width:32px">Nr.</th>
+                <th style="width:120px">BSK‑Nr.</th>
+                <th style="min-width:110px">Einbauort</th>
+                <th style="width:100px">Abmessung<br>B×H×L</th>
+                <th style="width:70px">Her-<br>steller</th>
+                <th style="width:80px">Prüf&shy;zeichen</th>
+                <th style="width:60px">Einbau</th>
+                <th style="width:60px">Funktion</th>
+                <th style="width:38px">Art</th>
+                <th>Bemerkung</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="bsk-row-template" class="hidden">
+                <td class="bsk-row-idx"></td>
+                <td><input class="bsk-input" data-field="nr"></td>
+                <td><input class="bsk-input" data-field="einbauort"></td>
+                <td><input class="bsk-input" data-field="abmessung"></td>
+                <td><input class="bsk-input" data-field="hersteller"></td>
+                <td><input class="bsk-input" data-field="pruefzeichen"></td>
+
+                <!-- Einbau: Auswahl + Foto -->
+                <td>
+                  <select class="bsk-select" data-field="einbauStatus">
+                    <option value="">–</option>
+                    <option value="ok">i.O.</option>
+                    <option value="nio">n.i.O.</option>
+                  </select>
+                  <div class="photo-btn-wrap" data-photo-for="einbau">
+                    <label class="photo-btn">
+                      <span class="icon">📷</span><span class="label">Foto hinzufügen</span>
+                      <input type="file" accept="image/*" capture="environment">
+                    </label>
+                  </div>
+                </td>
+
+                <!-- Funktion: Auswahl + Foto -->
+                <td>
+                  <select class="bsk-select" data-field="funktionStatus">
+                    <option value="">–</option>
+                    <option value="ok">i.O.</option>
+                    <option value="nio">n.i.O.</option>
+                  </select>
+                  <div class="photo-btn-wrap" data-photo-for="funktion">
+                    <label class="photo-btn">
+                      <span class="icon">📷</span><span class="label">Foto hinzufügen</span>
+                      <input type="file" accept="image/*" capture="environment">
+                    </label>
+                  </div>
+                </td>
+
+                <td><input class="bsk-input" data-field="art"></td>
+                <td><input class="bsk-input" data-field="bemerkung"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mängel-Katalog -->
+      <div class="card">
+        <div class="sec-hdr">
+          <i class="ti ti-alert-circle"></i>
+          <span class="sec-title">Mängel-Katalog</span>
+        </div>
+        <div style="padding:10px 14px;font-size:12px;color:var(--tx2);line-height:1.5">
+          Prüfung nach Herstellerangaben und Prüfzeugnissen.<br>
+          Mängelnummern in der Spalte <strong>Bemerkung</strong> verwenden (z.&nbsp;B. „E2, E4 / F11 / S20").
+        </div>
+        <div style="padding:8px 14px 12px;font-size:11px;color:var(--tx);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--brand);margin-bottom:4px">EINBAUMÄNGEL (E)</div>
+            <ul style="list-style:none;padding-left:0;display:flex;flex-direction:column;gap:2px">
+              <li>1 – Kein Zugang zur BSK</li>
+              <li>2 – Zugang Revisionsdeckel fehlt</li>
+              <li>3 – Nicht in der Wand/Decke</li>
+              <li>4 – Einmörtelung nicht in Ordnung</li>
+              <li>5 – Luftrichtung unzulässig</li>
+              <li>6 – Einbau zur Nebenklappe zu gering (z.T. 150&nbsp;mm)</li>
+              <li>7 – BSK entspricht nicht F&nbsp;90</li>
+              <li>8 – Schutzvorrichtung fehlt/defekt</li>
+              <li>9 – BSK außerhalb der Wand</li>
+              <li>10 – BSK nur von Bedienseite einsehbar</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--brand);margin-bottom:4px">FUNKTIONSMÄNGEL (F)</div>
+            <ul style="list-style:none;padding-left:0;display:flex;flex-direction:column;gap:2px">
+              <li>11 – BSK schließt nicht</li>
+              <li>12 – BSK verriegelt nicht</li>
+              <li>13 – Auslöseelement defekt</li>
+              <li>14 – Bedienteil defekt</li>
+              <li>15 – Fernauslösung defekt</li>
+              <li>16 – Klappenblatt defekt</li>
+              <li>17 – Einrastung defekt</li>
+              <li>18 – Ansteuerung nicht OK</li>
+              <li>19 – Schmelzlotfeder defekt</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--brand);margin-bottom:4px">SONSTIGE MÄNGEL (S)</div>
+            <ul style="list-style:none;padding-left:0;display:flex;flex-direction:column;gap:2px">
+              <li>20 – Prüfzeichen fehlt</li>
+              <li>21 – Abstand zu brennbaren Bauteilen zu gering</li>
+              <li>22 – Bezeichnung fehlt</li>
+              <li>23 – Stellanzeige defekt</li>
+              <li>24 – Klappendichtung defekt</li>
+              <li>25 – Keine Meldung</li>
+              <li>26 – Endschalter defekt/fehlt</li>
+              <li>27 – Bez. am Schaltschrank falsch/fehlt</li>
+              <li>28 – Innere Prüfung nicht möglich/nicht zugänglich</li>
+              <li>29 – Elastische Verbindung fehlt</li>
+              <li>30 – Offene Wandöffnung neben BSK</li>
+              <li>31 – Einmörtelung gerissen</li>
+              <li>32 – Wand-/Deckenfuge offen</li>
+              <li>33 – Potentialausgleich fehlt</li>
+            </ul>
+          </div>
+        </div>
+        <div style="padding:8px 14px 12px;font-size:11px;color:var(--tx2);border-top:.5px solid var(--bdr)">
+          <div style="font-weight:600;color:var(--brand);margin-bottom:4px">Hinweise zu älteren Klappen</div>
+          <ul style="list-style:none;padding-left:0;display:flex;flex-direction:column;gap:2px">
+            <li>34 – BSK unterliegt noch nicht der Prüfzeichenpflicht (Herstellung bis 1974)</li>
+            <li>35 – Klappenblatt und Dichtung enthalten Asbest (Herstellung bis Mitte 1981)</li>
+            <li>36 – Klappendichtung enthält Asbest (Herstellung bis Mitte 1988)</li>
+            <li>37 – Klappendichtung enthält Asbest, nicht auslösen – Rücksprache mit Kunden / Leitlinien Gefahrstoffverordnung</li>
+          </ul>
+          <div style="font-size:10px;color:var(--tx3);margin-top:6px">W = Wandeinbau · D = Deckeneinbau · B = Bodeneinbau</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Abschluss -->
+    <div id="tab-abschluss" class="content hidden">
+      <div class="card">
+        <div class="sec-hdr">
+          <i class="ti ti-checklist"></i>
+          <span class="sec-title">Zusammenfassung</span>
+        </div>
+        <div class="sum-grid">
+          <div class="sum-box">
+            <div class="sum-num" style="color:var(--brand)" id="sum-anzahl">0</div>
+            <div class="sum-lbl">erfasste BSK</div>
+          </div>
+          <div class="sum-box">
+            <div class="sum-num" style="color:var(--or)" id="sum-bemerkung">0</div>
+            <div class="sum-lbl">mit Bemerkung</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-hdr">
+          <i class="ti ti-notes"></i>
+          <span class="sec-title">Bemerkungen &amp; Hinweise</span>
+        </div>
+        <div style="padding:10px 14px">
+          <textarea id="f-bemerkungen" placeholder="Allgemeine Hinweise zur Wartung, besondere Vorkommnisse …" oninput="autosave()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unterschrift -->
+    <div id="tab-sig" class="content hidden">
+      <div class="card">
+        <div class="sec-hdr">
+          <i class="ti ti-signature"></i>
+          <span class="sec-title">Unterschrift Techniker</span>
+        </div>
+        <div class="sig-wrap">
+          <div class="sig-lrow">
+            <span class="sig-name">Techniker</span>
+            <div style="display:flex;gap:6px">
+              <button class="sig-btn" onclick="clearSig()">✕ Löschen</button>
+              <button class="sig-btn done hidden" id="sig-done">✓ OK</button>
+            </div>
+          </div>
+          <canvas id="sig-canvas" class="sig-canvas" width="700" height="130"></canvas>
+          <div class="sig-hint" id="sig-hint">Mit Finger oder Stift unterschreiben</div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="padding:11px 14px;display:flex;align-items:flex-start;gap:9px">
+          <i class="ti ti-info-circle" style="font-size:15px;color:var(--blue);margin-top:1px"></i>
+          <p style="font-size:12px;color:var(--tx2);line-height:1.5">PDF-Button → Drucken → Als PDF sichern.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fbar">
+    <button class="btn-back" onclick="prevTab()">←</button>
+    <button class="btn-next" onclick="nextTab()" id="next-btn">Weiter →</button>
+    <button class="btn-pfoo" onclick="showPdf()">PDF ↗</button>
+  </div>
+</div>
+
+<div class="pov hidden" id="pov">
+  <div class="ptopbar">
+    <div>
+      <div class="ptopbar-title">PDF-Vorschau</div>
+      <div class="ptopbar-sub">Drucken → Als PDF sichern</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-print" onclick="doPrint()">🖨 Drucken / PDF</button>
+      <button class="btn-cpdf" onclick="closePdf()">✕</button>
+    </div>
+  </div>
+  <div style="padding:12px 14px">
+    <div id="pdoc" class="pdoc"></div>
+  </div>
+</div>
+
+<div id="printArea"></div>
+<div class="toast" id="toast">Gespeichert</div>
+
+<script>
+const LOGO_DATA="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iQVBMX0hDVSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCA3OTMuNyAxODQuMyI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogI2U3MzgzODsKICAgICAgfQoKICAgICAgLmNscy0xLCAuY2xzLTIgewogICAgICAgIHN0cm9rZS13aWR0aDogMHB4OwogICAgICB9CgogICAgICAuY2xzLTIgewogICAgICAgIGZpbGw6ICNmZmY7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnPgogICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMzU0LjMsMTcwLjhoLS4ybC0xMC45LTMwLjQtMTAuOSwzMC40aC0uMmwtMTUuOC00MS44aDQuN2wxMS4xLDMwLjUsMTEtMzAuNWguMmwxMSwzMC41LDExLjEtMzAuNWg0LjhsLTE1LjgsNDEuOFoiLz4KICAgIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTQxNC40LDE0OS42YzAsMTIuMy04LjcsMjEuMy0yMC42LDIxLjNzLTIwLjUtOS0yMC41LTIxLjMsOC42LTIxLjMsMjAuNS0yMS4zLDIwLjYsOS4xLDIwLjYsMjEuM1pNMzc3LjYsMTQ5LjZjMCwxMCw2LjgsMTcuMywxNi4yLDE3LjNzMTYuMi03LjMsMTYuMi0xNy4zLTYuOC0xNy40LTE2LjItMTcuNC0xNi4yLDcuMy0xNi4yLDE3LjRaIi8+CiAgICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik00MjcuMSwxNjYuM2gyMC42djMuOWgtMjQuOXYtNDEuMmg0LjN2MzcuM1oiLz4KICAgIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTQ3OC43LDEzMi45aC0xOS44djE1aDE2Ljl2My45aC0xNi45djE4LjNoLTQuM3YtNDEuMmgyNHY0WiIvPgogICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNNTA5LjgsMTMyLjloLTE5Ljh2MTVoMTYuOXYzLjloLTE2Ljl2MTguM2gtNC4zdi00MS4yaDI0djRaIi8+CiAgICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik01NDEuOCwxMzIuOWgtMjAuNnYxNC40aDE4LjJ2My45aC0xOC4ydjE1aDIxLjF2NGgtMjUuM3YtNDEuMmgyNC45djRaIi8+CiAgICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik01NzMuNywxNzAuMWwtMTAuMS0xNi4yYy0uNCwwLS44LDAtMS4yLDBoLTguMXYxNi4yaC00LjN2LTQxLjJoMTIuNGM4LjMsMCwxNC40LDQuNCwxNC40LDEyLjVzLTMuNSwxMC4xLTguOCwxMS43bDEwLjcsMTdoLTVaTTU3Mi41LDE0MS40YzAtNS43LTQuMS04LjctMTAuNS04LjdoLTcuOHYxNy4zaDcuOGM2LjQsMCwxMC41LTIuOSwxMC41LTguNloiLz4KICAgIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTYxNS42LDEzMi44aC0xNXYzNy4zaC00LjN2LTM3LjNoLTE1di0zLjloMzQuMnYzLjlaIi8+CiAgICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik02NDYuOSwxMzIuN2wtMi4xLDMuNmMtMi45LTIuMy02LjgtNC4xLTExLjEtNC4xcy04LjgsMi4zLTguOCw3LjQsMi41LDUuOSw5LjksNy42YzkuNywyLjEsMTMuNiw1LjIsMTMuNiwxMS41cy01LjUsMTIuMi0xNC4yLDEyLjItMTAuOS0xLjktMTQuNi01LjJsMi40LTMuNWMzLDIuOSw3LjcsNC44LDEyLjMsNC44czkuOS0yLjcsOS45LTcuOS0zLjEtNi4zLTEwLjUtNy45Yy05LjctMi4xLTEyLjktNS4xLTEyLjktMTEuM3M1LjQtMTEuNiwxMy4xLTExLjYsOS45LDEuOSwxMy4yLDQuNFoiLz4KICA8L2c+CiAgPGc+CiAgICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02NS43LDEyOWgtMTcuNXY0MS4xaDguM3YtMTIuN2g4LjNjOS45LDAsMTYuMy01LjYsMTYuMy0xNC4ycy02LTE0LjItMTUuNS0xNC4yTTY1LjEsMTUwLjNoLTguNnYtMTQuM2g4LjRjNS4xLDAsOC4yLDIuNyw4LjIsNy4xcy0zLjIsNy4yLTguMSw3LjJNODguNiwxNzBoMjkuNHYtNy41aC0yMXYtMzMuNmgtOC40djQxLjFaTTEyNS4yLDE3MGgzMS4zdi03LjVoLTIzdi05LjZoMTkuNXYtNy4zaC0xOS41di05LjRoMjIuN3YtNy40aC0zMXY0MS4xWk0xODQuMSwxNzAuOGMxMi4yLDAsMjEuNC05LjEsMjEuNC0yMS4zcy04LjktMjEuMy0yMS40LTIxLjMtMjEuNCw5LjEtMjEuNCwyMS4zLDguOSwyMS4zLDIxLjQsMjEuM00xODQuMSwxNjMuM2MtNy40LDAtMTMuMS02LTEzLjEtMTMuOXM1LjctMTMuOSwxMy4xLTEzLjksMTMuMSw2LDEzLjEsMTMuOS01LjYsMTMuOS0xMy4xLDEzLjkiLz4KICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSIyNDguMiAxNzAgMjQ5LjkgMTcwIDI0OS45IDEyOSAyNDEuNiAxMjkgMjQxLjYgMTUzLjMgMjE0LjUgMTI4LjcgMjEyLjcgMTI4LjcgMjEyLjcgMTcwIDIyMSAxNzAgMjIxIDE0NS42IDI0OC4yIDE3MCIvPgogICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjg4LjgsMTcwaDkuM2wtMjEtNDEuNGgtMS43bC0yMC44LDQxLjRoOS4ybDIuOS02LjNoMTkuMmwyLjksNi4zWk0yNzYuMSwxNDMuMWw2LjgsMTMuOGgtMTMuM2w2LjUtMTMuOFoiLz4KICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTM0LjIsMTcwaDkuM2wtMjEtNDEuNGgtMS43TDAsMTcwaDkuMmwyLjktNi4zaDE5LjJsMi45LDYuM1pNMjEuNiwxNDMuMWw2LjgsMTMuOGgtMTMuM2w2LjUtMTMuOFoiLz4KICA8L2c+CiAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMTAzLjIsODMuM1YxLjRoNi4xdjgxLjloLTYuMVoiLz4KICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0xOTYuMyw4My4zbC0yNi4xLTMzLjloLTI2Ljh2MzMuOWgtNi4xVjEuNGgzNC40YzE3LjcsMCwyOS4zLDkuNiwyOS4zLDIzLjN2LjJjMCwxMy43LTEwLjIsMjEuNS0yNCwyMy40bDI3LDM1aC03LjdaTTE5NC45LDI0LjljMC0xMS04LjctMTcuOS0yMy41LTE3LjloLTI4djM2LjloMjcuNmMxMy43LDAsMjMuOS02LjksMjMuOS0xOC43di0uMloiLz4KICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yNjksN3YzMy42aDQ2LjN2NS42aC00Ni4zdjM3LjFoLTYuMVYxLjRoNTcuN3Y1LjZoLTUxLjZaIi8+CiAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMzc3LjcsODQuN2MtMjQuOCwwLTQxLjEtMTkuOC00MS4xLTQyLjF2LS4yQzMzNi42LDIwLDM1My4xLDAsMzc3LjksMHM0MS4xLDE5LjgsNDEuMSw0Mi4xcS4xLjEsMCwuMmMwLDIyLjMtMTYuNSw0Mi40LTQxLjMsNDIuNFpNNDEyLjcsNDIuNGMwLTIwLjItMTQuNy0zNi45LTM1LTM2LjlzLTM0LjgsMTYuNC0zNC44LDM2LjZ2LjJjMCwyMC4yLDE0LjcsMzYuOSwzNSwzNi45czM0LjgtMTYuNCwzNC44LTM2LjZ2LS4yWiIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTUwMS42LDgzLjNsLTI2LjEtMzMuOWgtMjYuOHYzMy45aC02LjFWMS40aDM0LjRjMTcuNywwLDI5LjMsOS42LDI5LjMsMjMuM3YuMmMwLDEzLjctMTAuMiwyMS41LTI0LDIzLjRsMjcsMzVoLTcuN1pNNTAwLjIsMjQuOWMwLTExLTguNy0xNy45LTIzLjUtMTcuOWgtMjh2MzYuOWgyNy42YzEzLjcsMCwyMy45LTYuOSwyMy45LTE4Ljd2LS4yWiIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTY2My41LDgzLjNWMS40aDYuMXY3Ni4zaDQ4LjF2NS42aC01NC4yWiIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTczOC44LDgzLjNWMS40aDYuMXY3Ni4zaDQ4LjF2NS42aC01NC4yWiIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTc1LjQsODMuNWwtMTEtMjIuOUgxNy40bC0xMS4xLDIyLjlIMEw0MC4xLDFoMS45bDQwLjEsODIuNWgtNi43Wk00MC45LDExLjNsLTIwLjksNDMuOGg0MS44TDQwLjksMTEuM1oiLz4KICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik02MzYuOSw4My41bC0xMS0yMi45aC00Ny4xbC0xMS4xLDIyLjloLTYuM0w2MDEuNSwxaDEuOWw0MC4xLDgyLjVoLTYuN1pNNjAyLjQsMTEuM2wtMjAuOSw0My44aDQxLjhsLTIwLjktNDMuOFoiLz4KPC9zdmc+";
+
+const TABS=['kopf','bsk','abschluss','sig'];
+let curIdx=0;
+let sigData=null;
+let bskData = [];
+
+function showTab(name,el){
+  TABS.forEach(t=>document.getElementById('tab-'+t).classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.remove('hidden');
+  curIdx=TABS.indexOf(name);
+  (el||document.querySelectorAll('.tab')[curIdx]).classList.add('active');
+  document.getElementById('pfill').style.width=((curIdx+1)/TABS.length*100)+'%';
+  document.getElementById('next-btn').textContent=curIdx===TABS.length-1?'PDF erstellen →':'Weiter →';
+  updateSummary();
+  document.querySelectorAll('.tab')[curIdx].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+}
+function nextTab(){if(curIdx<TABS.length-1){curIdx++;showTab(TABS[curIdx]);}else showPdf();}
+function prevTab(){if(curIdx>0){curIdx--;showTab(TABS[curIdx]);}}
+
+let _st;
+function autosave(){
+  clearTimeout(_st);
+  _st=setTimeout(()=>{
+    const t=document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),1200);
+  },400);
+}
+function gv(id){const el=document.getElementById(id);return el?(el.value||''):'';}
+
+function addBskRow(i, rowData){
+  const tbody=document.querySelector('.bsk-table tbody');
+  const tmpl=document.getElementById('bsk-row-template');
+  const tr=tmpl.cloneNode(true);
+  tr.id='';
+  tr.classList.remove('hidden');
+  tr.querySelector('.bsk-row-idx').textContent=i+1;
+
+  tr.querySelectorAll('input.bsk-input').forEach(inp=>{
+    const field=inp.dataset.field;
+    if(rowData && rowData[field]) inp.value=rowData[field];
+    inp.addEventListener('input',()=>{
+      bskData[i][field]=inp.value;
+      autosave();
+      updateSummary();
+    });
+  });
+
+  tr.querySelectorAll('select.bsk-select').forEach(sel=>{
+    const field=sel.dataset.field;
+    if(rowData && rowData[field]) sel.value=rowData[field];
+    const photoWrap = sel.parentElement.querySelector('.photo-btn-wrap');
+    const photoLabel = photoWrap ? photoWrap.querySelector('.photo-btn') : null;
+    const fileInput = photoLabel ? photoLabel.querySelector('input[type=file]') : null;
+    if(photoWrap && sel.value==='nio') photoWrap.style.display='block';
+    sel.addEventListener('change',()=>{
+      bskData[i][field]=sel.value;
+      if(photoWrap) photoWrap.style.display=sel.value==='nio'?'block':'none';
+      autosave();
+    });
+    if(fileInput && photoLabel){
+      fileInput.addEventListener('change',()=>{
+        if(!fileInput.files || !fileInput.files[0]) return;
+        const reader=new FileReader();
+        reader.onload=e=>{
+          const img=new Image();
+          img.onload=()=>{
+            const MAX=1000;let w=img.width,h=img.height;
+            if(w>h && w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+            else if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+            const c=document.createElement('canvas');c.width=w;c.height=h;
+            c.getContext('2d').drawImage(img,0,0,w,h);
+            const data=c.toDataURL('image/jpeg',0.7);
+            const key = field==='einbauStatus' ? 'einbauFoto' : 'funktionFoto';
+            bskData[i][key]=data;
+            if(rowData) rowData[key]=data;
+            photoLabel.classList.add('saved');
+            photoLabel.querySelector('.label').textContent='Foto gespeichert';
+            autosave();
+          };
+          img.src=e.target.result;
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      });
+    }
+  });
+
+  // Foto-Status aus gespeicherten Daten wiederherstellen
+  if(rowData){
+    ['einbauFoto','funktionFoto'].forEach(key=>{
+      if(rowData[key]){
+        const for_=key==='einbauFoto'?'einbau':'funktion';
+        const wrap=tr.querySelector(`.photo-btn-wrap[data-photo-for="${for_}"]`);
+        if(wrap){wrap.style.display='block';const lbl=wrap.querySelector('.photo-btn');if(lbl){lbl.classList.add('saved');lbl.querySelector('.label').textContent='Foto gespeichert';}}
+      }
+    });
+  }
+
+  tbody.appendChild(tr);
+}
+
+function initBskTable(data, rows){
+  const tbody=document.querySelector('.bsk-table tbody');
+  // Template vor dem Leeren retten
+  const tmpl=document.getElementById('bsk-row-template');
+  tbody.innerHTML='';
+  tbody.appendChild(tmpl); // Template wieder einhängen (bleibt hidden)
+  const ROWS = rows || 25;
+  bskData = data ? [...data] : Array.from({length:ROWS},()=>({}));
+  while(bskData.length < ROWS) bskData.push({});
+  for(let i=0;i<bskData.length;i++) addBskRow(i, bskData[i]);
+}
+function updateSummary(){
+  const filled=bskData.filter(r=>r && (r.nr || r.einbauort || r.abmessung||r.hersteller||r.pruefzeichen||r.einbauStatus||r.funktionStatus||r.art||r.bemerkung));
+  const withBem=filled.filter(r=>r.bemerkung);
+  const sa=document.getElementById('sum-anzahl');
+  const sb=document.getElementById('sum-bemerkung');
+  if(sa)sa.textContent=filled.length;
+  if(sb)sb.textContent=withBem.length;
+}
+
+function showPdf(){
+  const datum=gv('f-datum');
+  const naechste=gv('f-naechste');
+  const bh=gv('f-kunde')||'—';
+  const obj=gv('f-objekt')||'—';
+  const adr=gv('f-adresse')||'—';
+  const techn=gv('f-techniker')||'—';
+  const kopfbem=gv('f-kopf-bem')||'—';
+  const bemerkungen=gv('f-bemerkungen')||'Keine zusätzlichen Bemerkungen.';
+
+  const filled = bskData
+    .map((r,idx)=>({idx:idx+1,...r}))
+    .filter(r=>r.nr || r.einbauort || r.abmessung||r.hersteller||r.pruefzeichen||r.einbauStatus||r.funktionStatus||r.art||r.bemerkung);
+
+  const statusLabel = v => v==='ok' ? 'i.O.' : (v==='nio' ? 'n.i.O.' : '–');
+
+  const rowsHtml = filled.length ? filled.map(r=>`
+    <tr>
+      <td style="width:25px;text-align:center">${r.idx}</td>
+      <td>${r.nr||'–'}</td>
+      <td>${r.einbauort||'–'}</td>
+      <td>${r.abmessung||'–'}</td>
+      <td>${r.hersteller||'–'}</td>
+      <td>${r.pruefzeichen||'–'}</td>
+      <td>${statusLabel(r.einbauStatus)}${r.einbauFoto ? '<br><span style="font-size:8px;color:#185FA5">Foto vorhanden</span>' : ''}</td>
+      <td>${statusLabel(r.funktionStatus)}${r.funktionFoto ? '<br><span style="font-size:8px;color:#185FA5">Foto vorhanden</span>' : ''}</td>
+      <td>${r.art||'–'}</td>
+      <td>${r.bemerkung||'–'}</td>
+    </tr>`).join('')
+    : `<tr><td colspan="10" style="text-align:center;color:#999;font-style:italic">Keine Brandschutzklappen erfasst.</td></tr>`;
+
+  document.getElementById('pdoc').innerHTML = `
+    <div class="pco-hdr">
+      ${LOGO_DATA?`<img class="pco-logo" src="${LOGO_DATA}" alt="Logo">`:''}
+      <div class="pco-right">
+        <div style="display:flex;align-items:baseline;gap:10px;justify-content:flex-end">
+          <div class="pdoc-title">Brandschutzklappenprotokoll</div>
+          <div class="pnorm" style="white-space:nowrap">${datum||''}</div>
+        </div>
+        <div class="pco-info" style="margin-top:4px;line-height:1.7">
+          gem. Herstellerangaben / Prüfzeugnissen · DIN EN 15650 · VDMA 24186<br>
+          Benzstr. 1 · 70839 Gerlingen · Tel. 07156 / 178 09 - 287 · info.airforall@apleona.com
+        </div>
+      </div>
+    </div>
+    <div class="pbody">
+      <div class="pparties">
+        <div class="pparty">
+          <div class="pparty-title">Kunde</div>
+          <div class="pparty-val">${bh}</div>
+        </div>
+        <div class="pparty">
+          <div class="pparty-title">Objekt</div>
+          <div class="pparty-val">${obj}<br>${adr}</div>
+        </div>
+      </div>
+      <div class="pmeta">
+        <div class="pbox">
+          <div class="pbox-k">Auftragsnummer</div>
+          <div class="pbox-v">${gv('f-auftragsnr')||'—'}</div>
+        </div>
+        <div class="pbox">
+          <div class="pbox-k">Techniker</div>
+          <div class="pbox-v">${techn}</div>
+        </div>
+        <div class="pbox">
+          <div class="pbox-k">Nächste Wartung</div>
+          <div class="pbox-v">${naechste||'—'}</div>
+        </div>
+        <div class="pbox">
+          <div class="pbox-k">Kopf-Bemerkung</div>
+          <div class="pbox-v" style="font-size:10px">${kopfbem}</div>
+        </div>
+      </div>
+      <div class="psec">Brandschutzklappen</div>
+      <table class="ptbl">
+        <thead>
+          <tr>
+            <th style="width:25px">Nr.</th>
+            <th>BSK-Nr.</th>
+            <th>Einbauort</th>
+            <th style="width:70px">Abmessung<br>B×H×L</th>
+            <th>Hersteller</th>
+            <th>Prüfzeichen</th>
+            <th>Einbau</th>
+            <th>Funktion</th>
+            <th style="width:65px">Art (W/D/B)</th>
+            <th>Bemerkung</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+      <div class="psec">Mängel-Katalog</div>
+      <table style="width:100%;font-size:8.5px;border-collapse:collapse;color:#333">
+        <tr style="vertical-align:top">
+          <td style="width:33%;padding-right:8px">
+            <div style="font-weight:700;color:#002060;margin-bottom:3px">EINBAUMÄNGEL (E)</div>
+            1 Kein Zugang zur BSK<br>2 Zugang Revisionsdeckel fehlt<br>3 Nicht in der Wand/Decke<br>
+            4 Einmörtelung nicht in Ordnung<br>5 Luftrichtung unzulässig<br>6 Einbau zur Nebenklappe zu gering<br>
+            7 BSK entspricht nicht F 90<br>8 Schutzvorrichtung fehlt/defekt<br>9 BSK außerhalb der Wand<br>10 BSK nur von Bedienseite einsehbar
+          </td>
+          <td style="width:33%;padding-right:8px">
+            <div style="font-weight:700;color:#002060;margin-bottom:3px">FUNKTIONSMÄNGEL (F)</div>
+            11 BSK schließt nicht<br>12 BSK verriegelt nicht<br>13 Auslöseelement defekt<br>
+            14 Bedienteil defekt<br>15 Fernauslösung defekt<br>16 Klappenblatt defekt<br>
+            17 Einrastung defekt<br>18 Ansteuerung nicht OK<br>19 Schmelzlotfeder defekt
+          </td>
+          <td style="width:34%">
+            <div style="font-weight:700;color:#002060;margin-bottom:3px">SONSTIGE MÄNGEL (S)</div>
+            20 Prüfzeichen fehlt<br>21 Abstand zu brennbaren Bauteilen zu gering<br>22 Bezeichnung fehlt<br>
+            23 Stellanzeige defekt<br>24 Klappendichtung defekt<br>25 Keine Meldung<br>
+            26 Endschalter defekt/fehlt<br>27 Bez. Schaltschrank falsch/fehlt<br>28 Innere Prüfung nicht möglich<br>
+            29 Elastische Verbindung fehlt<br>30 Offene Wandöffnung neben BSK<br>31 Einmörtelung gerissen<br>
+            32 Wand-/Deckenfuge offen<br>33 Potentialausgleich fehlt
+          </td>
+        </tr>
+      </table>
+      <div style="margin-top:5px;padding:5px 6px;background:#f9f9f9;border:.5px solid #eee;border-radius:3px;font-size:8px;color:#555">
+        <strong style="color:#002060">Hinweise zu älteren Klappen:</strong>
+        34 BSK unterliegt noch nicht der Prüfzeichenpflicht (Herstellung bis 1974) &nbsp;·&nbsp;
+        35 Klappenblatt und Dichtung enthalten Asbest (bis Mitte 1981) &nbsp;·&nbsp;
+        36 Klappendichtung enthält Asbest (bis Mitte 1988) &nbsp;·&nbsp;
+        37 Klappendichtung enthält Asbest – nicht auslösen, Rücksprache Kunde / Leitlinien Gefahrstoffverordnung
+      </div>
+      <div style="font-size:8px;color:#999;margin-top:3px">
+        <strong>W</strong> = Wandeinbau &nbsp;·&nbsp; <strong>D</strong> = Deckeneinbau &nbsp;·&nbsp; <strong>B</strong> = Bodeneinbau
+      </div>
+      <div style="page-break-inside:avoid;margin-top:8px">
+        <div class="psec">Bemerkungen &amp; Hinweise</div>
+        <div style="background:#f9f9f9;border-radius:4px;padding:8px;min-height:32px;font-size:10px;color:#444;border:.5px solid #eee">
+          ${bemerkungen.replace(/\n/g,'<br>')}
+        </div>
+      </div>
+      <div style="page-break-inside:avoid;margin-top:8px">
+        <div class="psec">Unterschrift Techniker</div>
+        <div style="border:.5px solid #ddd;border-radius:4px;padding:8px 10px;min-height:75px;display:flex;flex-direction:column;justify-content:space-between">
+          <div style="font-size:9px;color:#999;margin-bottom:4px">Techniker</div>
+          ${sigData
+            ? `<img src="${sigData}" style="max-height:55px;object-fit:contain;object-position:left">`
+            : `<div style="height:55px;border-top:.5px solid #ccc;margin-top:8px"></div>`}
+          <div style="font-size:8px;color:#bbb;margin-top:4px">Ort, Datum: Gerlingen, ${gv('f-datum')||'__________'} &nbsp;&nbsp;&nbsp;&nbsp; Air for All GmbH</div>
+        </div>
+      </div>
+      <div class="pfoot">
+        <span>Brandschutzklappenprotokoll · BSK Wartung 2026</span>
+        <span>Erstellt: ${new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}</span>
+      </div>
+    </div>
+  `;
+  document.getElementById('pov').classList.remove('hidden');
+}
+function closePdf(){document.getElementById('pov').classList.add('hidden');}
+function doPrint(){
+  const c=document.getElementById('pdoc').innerHTML;
+  const w=window.open('','_blank');
+  if(!w){alert('Bitte Popups für diese Seite erlauben.');return;}
+  const styles=Array.from(document.querySelectorAll('style')).map(s=>s.innerHTML).join('\n');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>BSK Protokoll</title><style>${styles}body{background:#fff;padding:10mm;font-family:'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}@media print{body{padding:0}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{margin:10mm;size:A4}.pfoot{position:fixed;bottom:0;width:100%}}</style></head><body>${c}</body></html>`);
+  w.document.close();
+  setTimeout(()=>{w.focus();w.print();},300);
+}
+
+// Signatur
+(function(){
+  const c=document.getElementById('sig-canvas');if(!c)return;
+  const ctx=c.getContext('2d');let drawing=false,lx=0,ly=0;
+  function pos(e){const r=c.getBoundingClientRect(),sx=c.width/r.width,sy=c.height/r.height;return e.touches?{x:(e.touches[0].clientX-r.left)*sx,y:(e.touches[0].clientY-r.top)*sy}:{x:(e.clientX-r.left)*sx,y:(e.clientY-r.top)*sy};}
+  function start(e){e.preventDefault();drawing=true;const p=pos(e);lx=p.x;ly=p.y;ctx.beginPath();ctx.arc(lx,ly,1.5,0,Math.PI*2);ctx.fillStyle='#1a1a1a';ctx.fill();}
+  function move(e){e.preventDefault();if(!drawing)return;const p=pos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.strokeStyle='#1a1a1a';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();lx=p.x;ly=p.y;}
+  function end(e){e.preventDefault();if(!drawing)return;drawing=false;sigData=c.toDataURL('image/png');c.classList.add('signed');document.getElementById('sig-done').classList.remove('hidden');document.getElementById('sig-hint').textContent='✓ Gespeichert';autosave();}
+  c.addEventListener('mousedown',start);c.addEventListener('mousemove',move);c.addEventListener('mouseup',end);c.addEventListener('mouseleave',end);
+  c.addEventListener('touchstart',start,{passive:false});c.addEventListener('touchmove',move,{passive:false});c.addEventListener('touchend',end,{passive:false});
+})();
+function clearSig(){
+  const c=document.getElementById('sig-canvas');if(!c)return;
+  c.getContext('2d').clearRect(0,0,c.width,c.height);
+  c.classList.remove('signed');sigData=null;
+  document.getElementById('sig-done').classList.add('hidden');
+  document.getElementById('sig-hint').textContent='Mit Finger oder Stift unterschreiben';
+}
+
+// Excel Import
+function loadExcel(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, {type:'array', cellDates:true});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, raw:false});
+
+      // Kopfdaten: Zeile 4 (Index 4) = Auftragsnr, Kunde, Datum
+      //            Zeile 5 (Index 5) = Adresse, nächste Wartung
+      const meta = {};
+      const row4 = rows[4] || [];
+      const row5 = rows[5] || [];
+
+      // Auftragsnr: Spalte 1 (nach "Auftragsnummer:")
+      if(row4[1]) meta.auftragsnr = String(row4[1]).trim();
+      // Kunde: Spalte 3
+      if(row4[3]) meta.kunde = String(row4[3]).trim();
+      // Datum: Spalte 9
+      if(row4[9]){
+        const d = new Date(row4[9]);
+        if(!isNaN(d)) meta.datum = d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+        else meta.datum = String(row4[9]).trim();
+      }
+      // Adresse: Spalte 3 in Zeile 5
+      if(row5[3]) meta.adresse = String(row5[3]).trim();
+      // Nächste Wartung: Spalte 9 in Zeile 5
+      if(row5[9]) meta.naechste = String(row5[9]).trim();
+
+      // BSK-Zeilen: ab Zeile 7 (Index 7), bis Zeile ist leer oder nicht BSK
+      const artMap = {'wand':'W','decke':'D','boden':'B','w':'W','d':'D','b':'B'};
+      const statusMap = {
+        'i.o.':'io','io':'io',
+        'n.i.o.':'nio','n.i.o':'nio','nio':'nio',
+        'n.v.':'nv','nv':'nv'
+      };
+
+      const bskRows = [];
+      for(let i=7; i<rows.length; i++){
+        const r = rows[i];
+        if(!r || !r[0]) continue;
+        const nr = String(r[0]).trim();
+        // Stop wenn kein BSK-Eintrag mehr (Mängelkatalog etc.)
+        if(nr.toLowerCase().startsWith('prüfung') || nr.toLowerCase().startsWith('einbaumängel')) break;
+
+        const artRaw = r[8] ? String(r[8]).trim().toLowerCase() : '';
+        const art = artMap[artRaw] || (artRaw ? artRaw.charAt(0).toUpperCase() : '');
+
+        const norm = s => (s||'').toString().trim().toLowerCase().replace(/[\s.]/g,'');
+        const einbauStatus  = statusMap[norm(r[6])]  || 'io';
+        const funktionStatus = statusMap[norm(r[7])] || 'io';
+
+        bskRows.push({
+          nr,
+          einbauort:    r[1] ? String(r[1]).trim() : '',
+          abmessung:    r[2] ? String(r[2]).trim() : '',
+          hersteller:   r[4] ? String(r[4]).trim() : '',
+          pruefzeichen: r[5] ? String(r[5]).trim() : '',
+          einbauStatus,
+          funktionStatus,
+          art,
+          bemerkung:    r[9] ? String(r[9]).trim() : ''
+        });
+      }
+
+      if(bskRows.length === 0){
+        alert('Keine BSK-Zeilen gefunden – bitte prüfen ob die Excel ausgefüllt ist und das korrekte Format hat.');
+        return;
+      }
+
+      // Felder befüllen
+      const set = (id,val) => { const el=document.getElementById(id); if(el && val) el.value=val; };
+      set('f-auftragsnr', meta.auftragsnr);
+      set('f-kunde',      meta.kunde);
+      set('f-datum',      meta.datum);
+      set('f-naechste',   meta.naechste);
+      set('f-adresse',    meta.adresse);
+
+      // Tabelle neu aufbauen
+      initBskTable(bskRows);
+      updateSummary();
+
+      const t=document.getElementById('toast');
+      t.textContent=`Excel importiert: ${bskRows.length} BSK${bskRows.length!==1?'s':''} ✓`;
+      t.classList.add('show');
+      setTimeout(()=>{t.classList.remove('show');t.textContent='Gespeichert';},2500);
+
+    } catch(err) {
+      alert('Fehler beim Excel-Import: ' + err.message);
+      console.error(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  input.value='';
+}
+
+// Speichern / Laden
+function saveJSON(){
+  const data = {
+    version: 1,
+    meta: {
+      auftragsnr: gv('f-auftragsnr'),
+      kunde: gv('f-kunde'),
+      datum: gv('f-datum'),
+      naechste: gv('f-naechste'),
+      objekt: gv('f-objekt'),
+      adresse: gv('f-adresse'),
+      techniker: gv('f-techniker'),
+      kopfbem: gv('f-kopf-bem'),
+      bemerkungen: gv('f-bemerkungen'),
+      maengelKurz: gv('f-maengel-kurz')
+    },
+    bskData: bskData,
+    sigData: sigData
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const kunde = gv('f-kunde') || 'Protokoll';
+  const datum = gv('f-datum').replace(/\./g,'-') || 'Datum';
+  a.download = `BSK_${kunde}_${datum}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  const t=document.getElementById('toast');
+  t.textContent='Gespeichert ✓';
+  t.classList.add('show');
+  setTimeout(()=>{t.classList.remove('show');t.textContent='Gespeichert';},1500);
+}
+
+function loadJSON(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!data.meta) throw new Error('Ungültiges Format');
+      // Felder befüllen
+      const m = data.meta;
+      const set = (id,val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
+      set('f-auftragsnr', m.auftragsnr);
+      set('f-kunde', m.kunde);
+      set('f-datum', m.datum);
+      set('f-naechste', m.naechste);
+      set('f-objekt', m.objekt);
+      set('f-adresse', m.adresse);
+      set('f-techniker', m.techniker);
+      set('f-kopf-bem', m.kopfbem);
+      set('f-bemerkungen', m.bemerkungen);
+      set('f-maengel-kurz', m.maengelKurz);
+      // BSK-Daten laden – Tabelle wird komplett neu aufgebaut mit echter Zeilenanzahl
+      if(Array.isArray(data.bskData)){
+        initBskTable(data.bskData);
+      }
+      // Signatur laden
+      if(data.sigData){
+        sigData = data.sigData;
+        const c = document.getElementById('sig-canvas');
+        if(c){
+          const img = new Image();
+          img.onload = () => { c.getContext('2d').drawImage(img,0,0,c.width,c.height); c.classList.add('signed'); };
+          img.src = sigData;
+          document.getElementById('sig-done').classList.remove('hidden');
+          document.getElementById('sig-hint').textContent='✓ Gespeichert';
+        }
+      }
+      updateSummary();
+      const t=document.getElementById('toast');
+      t.textContent='Geladen ✓';
+      t.classList.add('show');
+      setTimeout(()=>{t.classList.remove('show');t.textContent='Gespeichert';},1500);
+    } catch(err) {
+      alert('Fehler beim Laden: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  input.value=''; // Reset so dieselbe Datei nochmals geladen werden kann
+}
+
+// Init
+window.addEventListener('load',()=>{
+  const s=document.getElementById('splash');
+  if(s)setTimeout(()=>{s.style.opacity='0';setTimeout(()=>s.remove(),500);},700);
+  const nd=new Date();const fd=document.getElementById('f-datum');
+  if(fd)fd.value=nd.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+  initBskTable();
+});
+</script>
+</body>
+</html>
